@@ -1,4 +1,6 @@
 package Assignment_2_CucumberBDD.PageObjects;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -18,6 +20,7 @@ public class CommonPageObjects {
 //============= Locators for WebElements on Landing page============================================//
 
 	private By logoImage= By.xpath("//div[@id='header_logo']/a/img[@alt='My Store']");
+	private By prodCatgory= By.xpath("//div[@id='block_top_menu']/ul/li");
 	
 //============= Expected Results ====================================================================//
 	
@@ -92,8 +95,41 @@ public class CommonPageObjects {
     }
 
  //=================================================================================================//
-    
-    
-    
+    public void setProdCategory()
+    {
+    	List <WebElement> prodCategoryList =driver.findElements(prodCatgory);
+    	Assert.assertEquals(false, prodCategoryList.isEmpty());
+    	logger.info("Display the product category list, size of list is: "+ prodCategoryList.size());
+    	scn.log("Product category is displayed on page with size is: "+ prodCategoryList.size());
+    }
+  //=================================================================================================//   
+    public void validateProdCategory(List<String> prodList)
+    {
+    	List <WebElement> prodCategoryList =driver.findElements(prodCatgory);
+    	{
+    		for(int i=0; i< prodCategoryList.size(); i++)
+    		{
+    			if(prodCategoryList.get(i).getText().equals(prodList.get(i).toString()))
+        		{
+        			Assert.assertTrue(true);
+        			logger.info(prodCategoryList.get(i).getText()+ " is matched with expected "+ prodList.get(i).toString()+" product name in datatable");
+        		}
+    			else
+    			{
+    				Assert.fail();
+        			logger.fatal(prodCategoryList.get(i).getText()+ " is not matched with expected "+ prodList.get(i).toString()+" product name in datatable");
+    			}
+    		}
+    		logger.info("Validate the product category with expected datatable");
+    	}
+    }
+  //=================================================================================================//   
+    public void sizeOfProdCategory(int prodCount)
+    {
+ 	   List <WebElement> prodCategoryList =driver.findElements(prodCatgory);
+ 	   Assert.assertEquals(prodCount, prodCategoryList.size());
+ 	   logger.info("validate the Size of product category, size is: "+ prodCategoryList.size());
+ 	   scn.log("validate the Size of product category, size is: "+ prodCategoryList.size());
+    }
     
 }

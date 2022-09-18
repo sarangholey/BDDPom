@@ -7,7 +7,7 @@ import io.cucumber.junit.CucumberOptions;
 	@CucumberOptions(
 	        features="classpath:Features",           //Path of Feature folder which hold feature file
 	        glue="Assignment_2_CucumberBDD.StepDef", // Path of StepDefinition file
-	        tags="@URLRedirection", 
+	        tags= "@loginPositive", 
 	        plugin = {"pretty",                      
 	            "html:target/html/htmlReport.html",
 	            "json:target/json/jsonReport.json",

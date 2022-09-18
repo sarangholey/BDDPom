@@ -1,9 +1,17 @@
 package Assignment_2_CucumberBDD.StepDef;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import Assignment_2_CucumberBDD.Core.WebDriverFactory;
 import Assignment_2_CucumberBDD.PageObjects.CommonPageObjects;
 import Assignment_2_CucumberBDD.PageObjects.FooterSectionObject;
@@ -151,4 +159,69 @@ public class StepDefFile {
 	public void user_see_the_twitter_account_name(String AcName) {
 		footerObject.twitterAcNameValidation(AcName);
 	}	
+	
+	@When("User see the product category")
+	public void user_see_the_product_category() {
+		cmnPageObject.setProdCategory();
+	}
+
+	@Then("Validate product category as per expected product category listed below")
+	public void validate_product_category_as_per_expected_product_category_listed_below(List<String> prodCat) {
+		cmnPageObject.validateProdCategory(prodCat); 
+		scn.log("Validate the product category with expected datatable");
+	    
+	}
+	@Then("Size of product category should be {int}")
+	public void size_of_product_category_should_be(Integer prodCatCount) {
+		cmnPageObject.sizeOfProdCategory(prodCatCount);
+	}
+	
+	@Given("User click on signin button from home page")
+	public void user_click_on_signin_button_from_home_page() {
+		WebElement signinButtonElement = driver.findElement(By.xpath("//a[@title='Log in to your customer account']"));
+		signinButtonElement.click();
+	}
+	
+	@When("User redirected to login page of the application where title us {string}")
+	public void user_redirected_to_login_page_of_the_application_where_title_us(String loginPageTitle) {
+		String titleOfLoginPage = driver.getTitle();
+		Assert.assertEquals(loginPageTitle, titleOfLoginPage);
+	}
+	
+	@When("User enters {string} and {string} and click on signin button")
+	public void user_enters_and_and_click_on_signin_button(String emailId, String password) {
+		WebElement emailIdInputFieldElement = driver.findElement(By.xpath("//label[@for='email']/following-sibling::input[@id='email']"));
+		emailIdInputFieldElement.sendKeys(emailId);
+		WebElement passwordInputFieldElement = driver.findElement(By.xpath("//input[@id='passwd']"));
+		passwordInputFieldElement.sendKeys(password);
+		WebElement signInButtonElement = driver.findElement(By.xpath("//button[@id='SubmitLogin']"));
+		signInButtonElement.click();
+	}
+
+	@Then("User successfully redirected to {string} page with user name displayed of the {string} and {string}")
+	public void user_successfully_redirected_to_page_with_user_name_displayed_of_the_and(String loggedInPageTitle, String firstname, String lastname) {
+		Assert.assertEquals(loggedInPageTitle, driver.getTitle());
+
+		WebElement userDetailsElement = driver.findElement(By.xpath("//a[@title='View my customer account']/span"));
+		String[] username = userDetailsElement.getText().split(" ");
+		String userFirstName = username[0];
+		String userLastName = username[1];
+		
+		Assert.assertEquals(firstname+ " " +lastname, userFirstName+ " " +userLastName);
+	}
+	
+	@Then("User is unable to login with an error message {string}")
+	public void user_is_unable_to_login_with_an_error_message(String authenticationFailedMessage) {
+	   
+		WebElement failedLoginMsgElement = driver.findElement(By.xpath("//div[@id='center_column']//li[text()='Authentication failed.']"));
+		//wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='center_column']//li[text()='Authentication failed.']")));
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Assert.assertEquals(authenticationFailedMessage, failedLoginMsgElement.getText());
+
+	}
 }
